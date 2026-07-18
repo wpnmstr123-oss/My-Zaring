@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Message For You</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Georgia', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, serif;
+            background-color: #fdfaf6;
+            color: #4a3e3d;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- STAGE 1: THE INITIAL CLOSED ENVELOPE (TRIGGER) --- */
+        .envelope-trigger {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 380px;
+            height: 260px;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+            -webkit-transition: opacity 0.5s ease, -webkit-transform 0.4s ease;
+            transition: opacity 0.5s ease, transform 0.4s ease;
+        }
+
+        .envelope-base {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #f3dfda;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* Closed Bottom Flaps */
+        .envelope-base::before {
+            content: '';
+            position: absolute;
+            z-index: 2;
+            border-left: 190px solid transparent;
+            border-right: 190px solid transparent;
+            border-bottom: 130px solid #ecd3cd;
+            bottom: 0;
+            left: 0;
+        }
+
+        /* Closed Side Flap */
+        .envelope-base::after {
+            content: '';
+            position: absolute;
+            z-index: 2;
+            border-top: 130px solid transparent;
+            border-bottom: 130px solid transparent;
+            border-left: 195px solid #e6cac3;
+            top: 0;
+            left: 0;
+        }
+
+        .envelope-base-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-top: 130px solid transparent;
+            border-bottom: 130px solid transparent;
+            border-right: 195px solid #e6cac3;
+            z-index: 2;
+        }
+
+        /* The Closed Top Flap */
+        .envelope-base-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 190px solid transparent;
+            border-right: 190px solid transparent;
+            border-top: 130px solid #d9b5ad;
+            z-index: 3;
+        }
+
+        /* Heart Seal */
+        .envelope-seal {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            background-color: #d9a09c;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 108px;
+            left: calc(50% - 22px);
+            z-index: 4;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: heartPulse 1.8s infinite;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .envelope-trigger.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+            display: none;
+        }
+
+        /* --- STAGE 2: THE ENVELOPE OPENING ANIMATION LAYER --- */
+        .envelope-container {
+            display: none;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            height: 280px;
+            position: absolute;
+            z-index: 5;
+            -webkit-transition: opacity 0.4s ease;
+            transition: opacity 0.4s ease;
+        }
+
+        .anim-envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #f3dfda;
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        /* Opening Front Flaps */
+        .anim-envelope::before {
+            content: '';
+            position: absolute;
+            z-index: 5;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-bottom: 140px solid #ecd3cd;
+            bottom: 0;
+            left: 0;
+        }
+
+        .anim-envelope::after {
+            content: '';
+            position: absolute;
+            z-index: 5;
+            border-top: 140px solid transparent;
+            border-bottom: 140px solid transparent;
+            border-left: 205px solid #e6cac3;
+            top: 0;
+            left: 0;
+        }
+
+        .anim-envelope-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-top: 140px solid transparent;
+            border-bottom: 140px solid transparent;
+            border-right: 205px solid #e6cac3;
+            z-index: 5;
+        }
+
+        /* Opening Top Flap */
+        .anim-envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-top: 140px solid #d9b5ad;
+            -webkit-transform-origin: top center;
+            transform-origin: top center;
+            -webkit-transition: -webkit-transform 0.5s ease-in-out;
+            transition: transform 0.5s ease-in-out;
+            z-index: 6;
+        }
+
+        /* The Paper Sheet sliding up */
+        .real-letter {
+            position: absolute;
+            bottom: 5px;
+            left: 20px;
+            width: 360px;
+            height: 220px;
+            background-color: #ffffff;
+            border-radius: 4px;
+            border: 1px solid #f0e6df;
+            padding: 20px;
+            z-index: 2;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Animation Trigger States */
+        .anim-envelope.open .anim-envelope-flap {
+            -webkit-transform: rotateX(180deg);
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .anim-envelope.open .real-letter {
+            -webkit-transform: translateY(-130px);
+            transform: translateY(-130px);
+            z-index: 4;
+        }
+
+        .envelope-container.fade-out {
+            opacity: 0;
+        }
+
+        /* --- STAGE 3: FLUID FULLSCREEN READER LAYER --- */
+        .fullscreen-letter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            z-index: 20;
+            padding: 60px 25px 40px 25px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            opacity: 0;
+            pointer-events: none;
+            -webkit-transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .fullscreen-letter.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .letter-content {
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        .heart-icon-text {
+            text-align: center;
+            color: #d9a09c;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #594a48;
+        }
+
+        .signature-section {
+            margin-top: 35px;
+            margin-bottom: 40px;
+        }
+
+        .sign-off {
+            font-family: 'Caveat', 'Comic Sans MS', cursive;
+            font-size: 28px;
+            color: #c9837e;
+            margin-bottom: 2px;
+        }
+
+        .name {
+            font-weight: bold;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- THE CUSTOM CHIC MUSIC CARD PLAYER --- */
+        .music-card {
+            background-color: #faf5f3;
+            border: 1px solid #f0e2df;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin: 10px auto 30px auto;
+            max-width: 440px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(201, 131, 126, 0.06);
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .disc-icon {
+            font-size: 26px;
+            color: #c9837e;
+            display: inline-block;
+        }
+
+        .disc-spin {
+            animation: rotateDisc 3.5s linear infinite;
+        }
+
+        @keyframes rotateDisc {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .track-details .track-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4a3e3d;
+            margin-bottom: 2px;
+            font-family: sans-serif;
+        }
+
+        .track-details .track-artist {
+            font-size: 12px;
+            color: #a3928f;
+            font-family: sans-serif;
+        }
+
+        .play-btn {
+            background-color: #c9837e;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            box-shadow: 0 2px 6px rgba(201, 131, 126, 0.2);
+            transition: background-color 0.2s;
+        }
+
+        .play-btn:active {
+            background-color: #b5726d;
+        }
+
+        /* --- FIXED SWIPE/SCROLL INDICATOR --- */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: rgba(201, 131, 126, 0.95);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-family: sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            pointer-events: none;
+            -webkit-transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+            animation: bounceIndicator 1.5s infinite;
+        }
+
+        .scroll-indicator.visible {
+            opacity: 1;
+        }
+
+        @keyframes bounceIndicator {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -4px); }
+        }
+
+        /* Responsive UI adjustments */
+        @media (max-width: 415px) {
+            .envelope-trigger { width: 90%; }
+            .envelope-base::before { border-left-width: 45vw; border-right-width: 45vw; }
+            .envelope-base::after { border-left-width: 46vw; }
+            .envelope-base-right { border-right-width: 46vw; }
+            .envelope-base-flap { border-left-width: 45vw; border-right-width: 45vw; }
+            
+            .envelope-container { width: 90%; }
+            .anim-envelope::before { border-left-width: 45vw; border-right-width: 45vw; }
+            .anim-envelope::after { border-left-width: 46vw; }
+            .anim-envelope-right { border-right-width: 46vw; }
+            .anim-envelope-flap { border-left-width: 45vw; border-right-width: 45vw; }
+            .real-letter { width: calc(100% - 40px); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="cardAudio">
+        <source src="better-together.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="envelope-trigger" id="envelopeTrigger" onclick="startSequence()">
+        <div class="envelope-base">
+            <div class="envelope-base-flap"></div>
+            <div class="envelope-base-right"></div>
+            <div class="envelope-seal">♥</div>
+        </div>
+    </div>
+
+    <div class="envelope-container" id="envContainer">
+        <div class="anim-envelope" id="animEnvelope">
+            <div class="anim-envelope-flap"></div>
+            <div class="anim-envelope-right"></div>
+            
+            <div class="real-letter" id="miniLetter">
+                <div class="letter-content" style="pointer-events: none; opacity: 0.8;">
+                    <div class="heart-icon-text">♥</div>
+                    <p>Hey [Name],</p>
+                    <p>I’ve been thinking a lot about us lately, and I wanted to write this down because you mean the world to me...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fullscreen-letter" id="fullLetter">
+        <div class="scroll-indicator" id="scrollTag">Scroll down ➔</div>
+        
+        <div class="letter-content">
+            <div class="heart-icon-text">♥</div>
+            
+            <div class="music-card">
+                <div class="music-info">
+                    <span class="disc-icon" id="discMedia">💿</span>
+                    <div class="track-details">
+                        <div class="track-title">Better Together</div>
+                        <div class="track-artist">Us The Duo</div>
+                    </div>
+                </div>
+                <button class="play-btn" id="audioToggleBtn" onclick="toggleAudioItem()">▶</button>
+            </div>
+            
+            <p>Hey Zaring,</p>
+            
+            <p>I’ve been thinking a lot about us lately, and I wanted to write this down because you mean the world to me. I've noticed that you've been a bit sad lately, and it hurts me to see you feeling down. I get the feeling you might be thinking you're lagging behind or being left out, but I need you to hear this: you are exactly where you need to be.</p>
+            
+            <p>Please don't compare yourself to anyone else, or feel like you're not doing enough. Everyone's path is completely different, and there is no single "right" timeline for life. Where you are right now is perfect, and I am incredibly proud of who you are and how hard you work every single day.</p>
+            
+            <p>You are my equal, my partner, and the person I want to build a life with. No matter what else is happening around us, we are a team, and we move forward together. I’m right here cheering you on, always.</p>
+            
+            <div class="signature-section">
+                <div class="sign-off">Love,</div>
+                <div class="name">Dee</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function startSequence() {
+            // Instantly dismiss Stage 1
+            document.getElementById('envelopeTrigger').classList.add('hidden');
+            
+            var envContainer = document.getElementById('envContainer');
+            envContainer.style.display = 'flex';
+            
+            // Open flap and smoothly slide out the letter showing real handwritten text notes
+            setTimeout(function() {
+                document.getElementById('animEnvelope').classList.add('open');
+            }, 50);
+
+            // Bring up the fullscreen immersive paper layer cleanly
+            setTimeout(function() {
+                var textViewer = document.getElementById('fullLetter');
+                textViewer.classList.add('active');
+                envContainer.classList.add('fade-out');
+                
+                // Show scroll indicator if content overflows screen size
+                setTimeout(function() {
+                    if (textViewer.scrollHeight > textViewer.clientHeight) {
+                        document.getElementById('scrollTag').classList.add('visible');
+                    }
+                }, 300);
+                
+                textViewer.addEventListener('scroll', function hideTag() {
+                    document.getElementById('scrollTag').classList.remove('visible');
+                    textViewer.removeEventListener('scroll', hideTag);
+                });
+
+            }, 1200);
+        }
+
+        function toggleAudioItem() {
+            var player = document.getElementById('cardAudio');
+            var btn = document.getElementById('audioToggleBtn');
+            var disc = document.getElementById('discMedia');
+
+            if (player.paused) {
+                player.play();
+                btn.innerHTML = "⏸";
+                disc.classList.add('disc-spin');
+            } else {
+                player.pause();
+                btn.innerHTML = "▶";
+                disc.classList.remove('disc-spin');
+            }
+        }
+    </script>
+
+</body>
+</html>
